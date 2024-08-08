@@ -7,12 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using dominio;
 using negocio;
 
 namespace ejemplos_ado_net
 {
     public partial class frmElementos : Form
     {
+        private List<Elemento> tipo;
         public frmElementos()
         {
             InitializeComponent();
@@ -22,8 +24,10 @@ namespace ejemplos_ado_net
         {
             ElementoNegocio elem = new ElementoNegocio();
 
-            dgvElementos.DataSource= elem.listar();
-           
+            tipo = elem.listar();
+            dgvElementos.DataSource = tipo;
+            
+
         }
     }
 }

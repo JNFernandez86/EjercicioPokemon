@@ -22,7 +22,7 @@ namespace negocio
             {
                 conexion.ConnectionString = "server=.;database=POKEDEX_DB; integrated security=true";
                 cmd.CommandType = System.Data.CommandType.Text;
-                //cmd.CommandText = "SELECT Numero, Nombre, Descripcion, UrlImagen FROM POKEMONS";
+                
                 cmd.CommandText = "select Numero, Nombre, p.Descripcion, UrlImagen, E.Descripcion Tipo, d.Descripcion Debilidad " +
                     "from POKEMONS p, ELEMENTOS e, elementos d " +
                     "WHERE E.Id = P.IdTipo and d.Id = p.IdDebilidad;";

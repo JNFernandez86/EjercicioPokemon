@@ -16,10 +16,11 @@ namespace negocio
         {
 			conexionBD accesodatos = new conexionBD();
             List<Elemento> listaE = new List<Elemento>();
+
             try
 			{
 						
-				accesodatos.setarConsulta("Select Id, Descripcion from Elementos");
+				accesodatos.setarConsulta("SELECT * FROM ELEMENTOS;");
 				accesodatos.ejecutarLectura();
 				
 

@@ -11,16 +11,16 @@ namespace negocio
     {
         private SqlConnection conexion;
         private SqlCommand cmd;
-        private SqlDataReader da;
+        private SqlDataReader lector;
 
         public SqlDataReader Lector 
         {
-            get { return da; }
+            get { return lector; }
         }
 
         public conexionBD()
         {
-            conexion = new SqlConnection("server=.;database=POKEDEX_DB; integrated security=true");
+            conexion = new SqlConnection("server=DESKTOP-8628R8A;database=POKEDEX_DB; integrated security=true");
             cmd = new SqlCommand();
 
 
@@ -33,11 +33,12 @@ namespace negocio
         }
 
         public void ejecutarLectura()
-        {
+        { 
+            cmd.Connection = conexion;
             try
             {
-                cmd.Connection = conexion;
                 conexion.Open();
+                lector = cmd.ExecuteReader();
             }
             catch (Exception)
             {
