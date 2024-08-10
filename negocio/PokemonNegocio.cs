@@ -9,43 +9,38 @@ using negocio;
 
 namespace negocio
 {
-     public class PokemonNegocio
+    public class PokemonNegocio
     {
         public List<Pokemon> listar()
         {
+            conexionBD accesodatos = new conexionBD();
             List<Pokemon> lista = new List<Pokemon>();
-            SqlConnection conexion = new SqlConnection();
-            SqlCommand cmd = new SqlCommand();
-            SqlDataReader lector;
 
             try
             {
-                conexion.ConnectionString = "server=.;database=POKEDEX_DB; integrated security=true";
-                cmd.CommandType = System.Data.CommandType.Text;
-                
-                cmd.CommandText = "select Numero, Nombre, p.Descripcion, UrlImagen, E.Descripcion Tipo, d.Descripcion Debilidad " +
+
+                accesodatos.setarConsulta("select Numero, Nombre, p.Descripcion, UrlImagen, E.Descripcion Tipo, d.Descripcion Debilidad " +
                     "from POKEMONS p, ELEMENTOS e, elementos d " +
-                    "WHERE E.Id = P.IdTipo and d.Id = p.IdDebilidad;";
-                cmd.Connection = conexion;
+                    "WHERE E.Id = P.IdTipo and d.Id = p.IdDebilidad;");
 
-                conexion.Open();
-                lector = cmd.ExecuteReader();
+                accesodatos.ejecutarLectura();
 
-                while (lector.Read())
+
+                while (accesodatos.Lector.Read())
                 {
                     Pokemon aux = new Pokemon();
-                    aux.Numero = lector.GetInt32(0); //metodo 1
-                    aux.Nombre = (string)lector["Nombre"];// metodo 2 - mas usuado -
-                    aux.Descripcion = (string)lector["Descripcion"];
-                    aux.UrlImagen = (string)lector["UrlImagen"];
-                    aux.Tipo = new Elemento(); // sin esto puede arrojar existencia Nula
-                    aux.Tipo.Descripcion = (string)lector["Tipo"];
-                    aux.Debilidad = new Elemento(); // sin esto puede arrojar existencia Nula
-                    aux.Debilidad.Descripcion = (string)lector["Debilidad"];
-                    lista.Add(aux);
 
+                    aux.Numero = accesodatos.Lector.GetInt32(0); //metodo 1
+                    aux.Nombre = (string)accesodatos.Lector["Nombre"];// metodo 2 - mas usuado -
+                    aux.Descripcion = (string)accesodatos.Lector["Descripcion"];
+                    aux.UrlImagen = (string)accesodatos.Lector["UrlImagen"];
+                    aux.Tipo = new Elemento(); // sin esto puede arrojar existencia Nula
+                    aux.Tipo.Descripcion = (string)accesodatos.Lector["Tipo"];
+                    aux.Debilidad = new Elemento(); // sin esto puede arrojar existencia Nula
+                    aux.Debilidad.Descripcion = (string)accesodatos.Lector["Debilidad"];
+
+                    lista.Add(aux);
                 }
-                
                 return lista;
             }
             catch (Exception ex)
@@ -55,8 +50,28 @@ namespace negocio
             }
             finally
             {
-                conexion.Close();
+                accesodatos.cerrarConexion();
+            }
+
+        }
+
+        public void agregar(Pokemon nuevo)
+        {
+            conexionBD datos = new conexionBD();
+
+
+            try
+            {
+                datos.setarConsulta("INSERT INTO POKEMONS(Numero,Nombre,Descripcion,UrlImagen,IdTipo,IdDebilidad,Activo) VALUES(" + nuevo.Numero + ",'" + nuevo.Nombre + "', '" + nuevo.Descripcion + "','txt ',1,2,1)");
+                datos.ejecutrarAccion();
+               
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }
+
 }

@@ -20,7 +20,8 @@ namespace negocio
 
         public conexionBD()
         {
-            conexion = new SqlConnection("server=DESKTOP-8628R8A;database=POKEDEX_DB; integrated security=true");
+            conexion = new SqlConnection("Data Source=192.168.0.13;Initial Catalog=POKEDEX_DB; User ID=Administrador;Password=Soporte00");
+            //conexion = new SqlConnection("server=DESKTOP-8628R8A;database=POKEDEX_DB; integrated security=true");
             cmd = new SqlCommand();
 
 
@@ -46,6 +47,27 @@ namespace negocio
                 throw;
             }
             
+        }
+
+        public void ejecutrarAccion()
+        { 
+            cmd.Connection=conexion;
+            try
+            {
+
+                conexion.Open();
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                conexion.Close();
+            }
         }
         public void cerrarConexion()
         {

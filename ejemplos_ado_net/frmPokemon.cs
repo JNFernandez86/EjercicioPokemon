@@ -55,5 +55,12 @@ namespace ejemplos_ado_net
             }
 
         }
+
+        private void btnAgregar_Click(object sender, EventArgs e)
+        {
+            frmAltaPokemon alta = new frmAltaPokemon();
+            alta.ShowDialog();
+
+        }
     }
 }

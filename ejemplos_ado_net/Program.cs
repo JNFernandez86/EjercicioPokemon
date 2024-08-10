@@ -16,7 +16,7 @@ namespace ejemplos_ado_net
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmElementos());
+            Application.Run(new frmPokemon());
         }
     }
 }
