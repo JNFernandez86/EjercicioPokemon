@@ -20,7 +20,7 @@ namespace negocio
             try
 			{
 						
-				accesodatos.setarConsulta("SELECT * FROM ELEMENTOS;");
+				accesodatos.setarConsulta("SELECT Id, Descripcion FROM ELEMENTOS;");
 				accesodatos.ejecutarLectura();
 				
 

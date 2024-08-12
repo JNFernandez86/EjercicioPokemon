@@ -25,10 +25,20 @@ namespace ejemplos_ado_net
         {
             PokemonNegocio negocio = new PokemonNegocio();
 
-            Listapokemons = negocio.listar();
-            dgvPokemons.DataSource = Listapokemons;
-            dgvPokemons.Columns["UrlImagen"].Visible = false;
-            pbxPokemon.Load(Listapokemons[0].UrlImagen);
+            try
+            {
+                Listapokemons = negocio.listar();
+                dgvPokemons.DataSource = Listapokemons;
+                dgvPokemons.Columns["UrlImagen"].Visible = false;
+                pbxPokemon.Load(Listapokemons[0].UrlImagen);
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.ToString());
+            }
+            
 
 
         }
@@ -53,6 +63,13 @@ namespace ejemplos_ado_net
 
                 pbxPokemon.Load("https://static.thenounproject.com/png/261694-200.png");
             }
+
+        }
+
+        private void btnAgregar_Click(object sender, EventArgs e)
+        {
+            frmAltaPokemon alta = new frmAltaPokemon();
+            alta.ShowDialog();
 
         }
     }

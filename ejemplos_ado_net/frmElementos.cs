@@ -32,8 +32,10 @@ namespace ejemplos_ado_net
 
         private void btnAgregar_Click(object sender, EventArgs e)
         {
+
             ElementoNegocio elem = new ElementoNegocio();
             //elem.insertar()
+
         }
     }
 }
