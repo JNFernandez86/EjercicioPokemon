@@ -1,6 +1,7 @@
 ﻿using dominio;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
@@ -45,5 +46,23 @@ namespace negocio
             }
 
         }
+		public void agregarElemento(Elemento TipoandDeb)
+		{
+			conexionBD db = new conexionBD();
+
+			try
+			{
+                db.setarConsulta("INSERT INTO ELEMENTOS (DESCRIPCION) VALUES (@Desc);");
+				db.setearParametro("@Desc",TipoandDeb.Descripcion);
+				db.ejecutarAccion();
+				
+            }
+			catch (Exception ex)
+			{
+
+				throw ex;
+			}
+			
+		}
     }
 }

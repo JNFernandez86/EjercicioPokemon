@@ -29,12 +29,11 @@ namespace ejemplos_ado_net
             
 
         }
-
-        private void btnAgregar_Click(object sender, EventArgs e)
+        private void btnAgregar_Click_1(object sender, EventArgs e)
         {
+            frmAgregarElementos frm =new frmAgregarElementos();
 
-            ElementoNegocio elem = new ElementoNegocio();
-            //elem.insertar()
+            frm.ShowDialog();
 
         }
     }
