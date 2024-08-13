@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using dominio;
 using negocio;
 using System.Security.AccessControl;
+using System.Collections;
 
 namespace negocio
 {
@@ -160,6 +161,107 @@ namespace negocio
             finally { datos.cerrarConexion(); }
 
 
+        }
+        public List<Pokemon> filtrar(string campo, string criterio, string filtro)
+        {
+            List<Pokemon> list = new List<Pokemon>();
+            conexionBD datos = new conexionBD();
+
+            try
+            {
+                string consulta = ("select Numero, Nombre, p.Descripcion, UrlImagen, E.Descripcion Tipo, d.Descripcion Debilidad,p.IdTipo,p.IdDebilidad, p.id " +
+                    "from POKEMONS p, ELEMENTOS e, elementos d " +
+                    "WHERE E.Id = P.IdTipo and d.Id = p.IdDebilidad and p.activo=1 and ");
+                    //" ORDER BY Numero;");
+
+                if(campo == "Número")
+                {
+                    switch (criterio)
+                    {
+                        case "Mayor a":
+                            consulta += "Numero > " + filtro;
+                            break;
+                        case "Menor a":
+                            consulta += "Numero < " + filtro;
+                            break;
+                        case "Igual a":
+                            consulta += "Numero = " + filtro;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if(campo == "Nombre")
+                {
+                    switch (criterio)
+                    {
+                        case "Comienza con":
+                            consulta += "Nombre like '"+filtro+ "%' ";
+                            break;
+                        case "Termina con":
+                            consulta += "Nombre like '%" + filtro + "' ";
+                            break;
+                        case "Contiene":
+                            consulta += "Nombre like '%" + filtro + "%' ";
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+                else
+                {
+                    switch (criterio)
+                    {
+                        case "Comienza con":
+                            consulta += "d.Descripcion like '" + filtro + "%' ";
+                            break;
+                        case "Termina con":
+                            consulta += "d.Descripcion like '%" + filtro + "' ";
+                            break;
+                        case "Contiene":
+                            consulta += "d.Descripcion like '%" + filtro + "%' ";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                datos.setarConsulta(consulta);
+                datos.ejecutarLectura();
+                
+                    while (datos.Lector.Read())
+                    {
+                        Pokemon aux = new Pokemon();
+
+                        aux.PokemonID = (int)datos.Lector["Id"];
+                        aux.Numero = datos.Lector.GetInt32(0);
+                        aux.Nombre = (string)datos.Lector["Nombre"];
+                        aux.Descripcion = (string)datos.Lector["Descripcion"];
+
+                        if (!(datos.Lector["UrlImagen"] is DBNull))
+                            aux.UrlImagen = (string)datos.Lector["UrlImagen"];
+
+                        aux.Tipo = new Elemento();
+                        aux.Tipo.Id = (int)datos.Lector["IdTipo"];
+                        aux.Tipo.Descripcion = (string)datos.Lector["Tipo"];
+                        aux.Debilidad = new Elemento(); // sin esto puede arrojar existencia Nula
+                        aux.Debilidad.Id = (int)datos.Lector["IdDebilidad"];
+                        aux.Debilidad.Descripcion = (string)datos.Lector["Debilidad"];
+
+                        list.Add(aux);
+                    }
+
+                return list;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
         }
     }
 

@@ -24,9 +24,10 @@ namespace ejemplos_ado_net
       
         private void frmPokemon_Load(object sender, EventArgs e)
         {
-
             cargar();
-
+            cboCampo.Items.Add("Número");
+            cboCampo.Items.Add("Nombre");
+            cboCampo.Items.Add("Descripción");
 
         }
         private void cargar()
@@ -37,8 +38,7 @@ namespace ejemplos_ado_net
             {
                 Listapokemons = negocio.listar();
                 dgvPokemons.DataSource = Listapokemons;
-                dgvPokemons.Columns["UrlImagen"].Visible = false;
-                dgvPokemons.Columns["PokemonID"].Visible = false;
+                OcultarColumnas();
                 pbxPokemon.Load(Listapokemons[0].UrlImagen);
 
             }
@@ -51,9 +51,14 @@ namespace ejemplos_ado_net
 
         private void dgvPokemons_SelectionChanged(object sender, EventArgs e)
         {
-            Pokemon select = (Pokemon)dgvPokemons.CurrentRow.DataBoundItem;
-            cargarImagen(select.UrlImagen);
             Elemento elem = new Elemento();
+            if (dgvPokemons.CurrentRow != null)
+            {
+                Pokemon select = (Pokemon)dgvPokemons.CurrentRow.DataBoundItem;
+                cargarImagen(select.UrlImagen);
+            }
+            
+            
         }
 
         private void cargarImagen(string imagen)
@@ -88,6 +93,12 @@ namespace ejemplos_ado_net
             cargar();
         }
 
+        private void OcultarColumnas() 
+        {
+            dgvPokemons.Columns["UrlImagen"].Visible = false;
+            dgvPokemons.Columns["PokemonID"].Visible = false;
+        }
+             
         //Eliminacion Fisica elimina los datos de la base de datos (irrecuperables)
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
@@ -130,6 +141,74 @@ namespace ejemplos_ado_net
                     MessageBox.Show(ex.ToString());
                 }
             }
+
+        
+
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            PokemonNegocio negocio = new PokemonNegocio();
+
+            try
+            {
+                string campo = cboCampo.SelectedItem.ToString();
+                string criterio = cboCriterio.SelectedItem.ToString();
+                string filtro = txtfiltroAvanzado.Text;
+                dgvPokemons.DataSource = negocio.filtrar(campo, criterio,filtro);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
+
         }
+
+        private void txtFiltro_TextChanged(object sender, EventArgs e)
+        {
+            List<Pokemon> listaFiltrada;
+
+            string filtro = txtFiltro.Text;
+
+
+            if (filtro != "")
+            {
+                listaFiltrada = Listapokemons.FindAll(x => x.Nombre.ToUpper().Contains(filtro.ToUpper()) || x.Tipo.Descripcion.ToUpper().Contains(filtro.ToUpper()));
+            }
+            else
+            {
+                listaFiltrada = Listapokemons;
+            }
+            dgvPokemons.DataSource = null;
+            dgvPokemons.DataSource = listaFiltrada;
+            OcultarColumnas();
+        }
+
+        private void cboCampo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           string opcion = cboCampo.SelectedItem.ToString();
+
+            if(opcion == "Número")
+            {
+                cboCriterio.Items.Clear();
+                cboCriterio.Items.Add("Mayor a");
+                cboCriterio.Items.Add("Menor a");
+                cboCriterio.Items.Add("Igual a");
+            }
+            else
+            {
+                cboCriterio.Items.Clear();
+                cboCriterio.Items.Add("Comienza con");
+                cboCriterio.Items.Add("Termina con");
+                cboCriterio.Items.Add("Contiene");
+
+            }
+        }
+
+        private void cboCriterio_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
     }
 
