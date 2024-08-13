@@ -34,7 +34,7 @@ namespace ejemplos_ado_net
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-            
+           
             PokemonNegocio negocio = new PokemonNegocio();
          
             try

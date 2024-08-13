@@ -16,7 +16,7 @@ namespace ejemplos_ado_net
     public partial class frmPokemon : Form
     {
         private List<Pokemon> Listapokemons;
-        
+        Pokemon seleccionado;
         public frmPokemon()
         {
             InitializeComponent();
@@ -54,8 +54,6 @@ namespace ejemplos_ado_net
             Pokemon select = (Pokemon)dgvPokemons.CurrentRow.DataBoundItem;
             cargarImagen(select.UrlImagen);
             Elemento elem = new Elemento();
-
-            
         }
 
         private void cargarImagen(string imagen)
@@ -82,12 +80,56 @@ namespace ejemplos_ado_net
 
         private void btnModificar_Click(object sender, EventArgs e)
         {
-            Pokemon seleccionado;
+            
             seleccionado = (Pokemon)dgvPokemons.CurrentRow.DataBoundItem;
 
             frmAltaPokemon alter = new frmAltaPokemon(seleccionado);
             alter.ShowDialog();
             cargar();
         }
+
+        //Eliminacion Fisica elimina los datos de la base de datos (irrecuperables)
+        private void BtnEliminar_Click(object sender, EventArgs e)
+        {
+            eliminar();
+        }
+        private void btnEliminarLogico_Click(object sender, EventArgs e)
+        {
+            eliminar(true);
+        }
+
+        private void eliminar(bool logico = false)
+        {
+                PokemonNegocio negocio = new PokemonNegocio();
+                try
+                {
+
+                    DialogResult respuesta = MessageBox.Show("Esta por eliminar un registro de la Base de Datos, ¿Esta seguro de eliminarlo?", "Eliminando", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                    if (respuesta == DialogResult.Yes)
+                    {
+                        seleccionado = (Pokemon)dgvPokemons.CurrentRow.DataBoundItem;
+
+                    if (logico)
+                    {
+                        negocio.eliminarLogico(seleccionado.PokemonID);
+                    }
+                    else
+                    {
+                        negocio.eliminar(seleccionado.PokemonID);
+                    }
+                        
+                        cargar();
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.ToString());
+                }
+            }
+        }
     }
-}
+
