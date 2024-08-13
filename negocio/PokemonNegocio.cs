@@ -20,7 +20,7 @@ namespace negocio
             try
             {
 
-                accesodatos.setarConsulta("select Numero, Nombre, p.Descripcion, UrlImagen, E.Descripcion Tipo, d.Descripcion Debilidad " +
+                accesodatos.setarConsulta("select Numero, Nombre, p.Descripcion, UrlImagen, E.Descripcion Tipo, d.Descripcion Debilidad,p.IdTipo,p.IdDebilidad, p.id " +
                     "from POKEMONS p, ELEMENTOS e, elementos d " +
                     "WHERE E.Id = P.IdTipo and d.Id = p.IdDebilidad" +
                     " ORDER BY Numero;");
@@ -32,6 +32,7 @@ namespace negocio
                 {
                     Pokemon aux = new Pokemon();
 
+                    aux.PokemonID = (int)accesodatos.Lector["Id"];
                     aux.Numero = accesodatos.Lector.GetInt32(0); //metodo 1
                     aux.Nombre = (string)accesodatos.Lector["Nombre"];// metodo 2 - mas usuado -
                     aux.Descripcion = (string)accesodatos.Lector["Descripcion"];
@@ -48,8 +49,10 @@ namespace negocio
 
                     //------
                     aux.Tipo = new Elemento(); // sin esto puede arrojar existencia Nula
+                    aux.Tipo.Id = (int)accesodatos.Lector["IdTipo"];
                     aux.Tipo.Descripcion = (string)accesodatos.Lector["Tipo"];
                     aux.Debilidad = new Elemento(); // sin esto puede arrojar existencia Nula
+                    aux.Debilidad.Id = (int)accesodatos.Lector["IdDebilidad"];
                     aux.Debilidad.Descripcion = (string)accesodatos.Lector["Debilidad"];
 
                     lista.Add(aux);
@@ -75,9 +78,12 @@ namespace negocio
 
             try
             {
-                datos.setarConsulta("INSERT INTO POKEMONS(Numero,Nombre,Descripcion,IdTipo,IdDebilidad,Activo) VALUES(" + nuevo.Numero + ",'" + nuevo.Nombre + "', '" + nuevo.Descripcion + "',@idTipo,@idDebilidad,1)");
-                datos.setearParametro("@idTipo", nuevo.Tipo.id);
-                datos.setearParametro("@idDebilidad", nuevo.Debilidad.id);
+                datos.setarConsulta("INSERT INTO POKEMONS(Numero,Nombre,Descripcion,UrlImagen,IdTipo,IdDebilidad,Activo) VALUES" +
+                    "(" + nuevo.Numero + ",'" + nuevo.Nombre + "', '" + nuevo.Descripcion + "',@UrlImagen,@idTipo,@idDebilidad,1)");
+
+                datos.setearParametro("@idTipo", nuevo.Tipo.Id);
+                datos.setearParametro("@idDebilidad", nuevo.Debilidad.Id);
+                datos.setearParametro("@UrlImagen", nuevo.UrlImagen);
                 datos.ejecutrarAccion();
                
             }
@@ -85,6 +91,37 @@ namespace negocio
             {
 
                 throw;
+            }
+        }
+        public void modificar(Pokemon poke)
+        {
+            conexionBD datos = new conexionBD();
+
+            try
+            {
+                datos.setarConsulta("UPDATE POKEMONS SET Numero=@numero,Nombre=@nombre,Descripcion=@desc,UrlImagen=@UrlImagen,IdTipo=@idtipo,IdDebilidad=@iddebilidad where Id=@idpoke");
+                datos.setearParametro("@numero", poke.Numero);
+                datos.setearParametro("@nombre", poke.Nombre);
+                datos.setearParametro("@desc", poke.Descripcion);
+                datos.setearParametro("@UrlImagen", poke.UrlImagen);
+                datos.setearParametro("@idtipo", poke.Tipo.Id);
+                datos.setearParametro("@iddebilidad", poke.Debilidad.Id);
+                datos.setearParametro("@idpoke", poke.PokemonID);
+
+
+                datos.ejecutarAccion();
+
+                
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
             }
         }
     }

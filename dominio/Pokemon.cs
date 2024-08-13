@@ -10,6 +10,8 @@ namespace dominio
 
     public class Pokemon
     {
+
+        public int PokemonID { get; set; }
         // Anotacion 
         [DisplayName("Número")]
 

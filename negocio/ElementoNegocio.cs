@@ -28,7 +28,7 @@ namespace negocio
 				while (accesodatos.Lector.Read())
 				{
 					Elemento aux = new Elemento();
-					aux.id = (int)accesodatos.Lector["Id"];
+					aux.Id = (int)accesodatos.Lector["Id"];
 					aux.Descripcion = (string)accesodatos.Lector["Descripcion"];
 
 					listaE.Add(aux);

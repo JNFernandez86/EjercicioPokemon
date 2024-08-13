@@ -16,11 +16,12 @@ namespace ejemplos_ado_net
     public partial class frmPokemon : Form
     {
         private List<Pokemon> Listapokemons;
+        
         public frmPokemon()
         {
             InitializeComponent();
         }
-
+      
         private void frmPokemon_Load(object sender, EventArgs e)
         {
 
@@ -37,6 +38,7 @@ namespace ejemplos_ado_net
                 Listapokemons = negocio.listar();
                 dgvPokemons.DataSource = Listapokemons;
                 dgvPokemons.Columns["UrlImagen"].Visible = false;
+                dgvPokemons.Columns["PokemonID"].Visible = false;
                 pbxPokemon.Load(Listapokemons[0].UrlImagen);
 
             }
@@ -76,6 +78,16 @@ namespace ejemplos_ado_net
             alta.ShowDialog();
             cargar();
 
+        }
+
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            Pokemon seleccionado;
+            seleccionado = (Pokemon)dgvPokemons.CurrentRow.DataBoundItem;
+
+            frmAltaPokemon alter = new frmAltaPokemon(seleccionado);
+            alter.ShowDialog();
+            cargar();
         }
     }
 }

@@ -103,8 +103,6 @@
         private System.Windows.Forms.DataGridView dgvElementos;
         private System.Windows.Forms.TextBox txtDescripcion;
         private System.Windows.Forms.Label lblId;
-        
-     
         private System.Windows.Forms.Label lblID;
         private System.Windows.Forms.Button btnAgregar;
     }

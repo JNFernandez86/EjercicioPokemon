@@ -22,18 +22,22 @@ namespace ejemplos_ado_net
 
         private void frmElementos_Load(object sender, EventArgs e)
         {
+            cargarElementos();
+        }
+
+        private void cargarElementos()
+        {
             ElementoNegocio elem = new ElementoNegocio();
 
             tipo = elem.listar();
             dgvElementos.DataSource = tipo;
-            
-
         }
         private void btnAgregar_Click_1(object sender, EventArgs e)
         {
             frmAgregarElementos frm =new frmAgregarElementos();
-
             frm.ShowDialog();
+
+            cargarElementos();
 
         }
     }
