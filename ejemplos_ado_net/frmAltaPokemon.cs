@@ -17,6 +17,7 @@ namespace ejemplos_ado_net
     public partial class frmAltaPokemon : Form
     {
         private Pokemon pokemon = null;
+        private OpenFileDialog archivo = null;
         public frmAltaPokemon()
         {
             InitializeComponent();
@@ -54,16 +55,35 @@ namespace ejemplos_ado_net
 
                 if(pokemon.PokemonID != 0)
                 {
+                    //.Text = (ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
                     negocio.modificar(pokemon);
                     MessageBox.Show("Pokemon Modificado exitosamente");
                 }
                 else
                 {
+                    //txtUrlImagen.Text = (ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
                     negocio.agregar(pokemon);
                     MessageBox.Show("Pokemon agregado exitosamente");
                 }
-               
-                
+
+                // guardo imagen si la levanto localmente
+                if (archivo != null && !(txtUrlImagen.Text.ToUpper().Contains("HTTP")))
+                {
+                    if (File.Exists(archivo.SafeFileName))
+                    {
+                        MessageBox.Show("Archivo ya existente","Archivo duplicado",MessageBoxButtons.OKCancel);
+
+                        //if(MessageBoxButtons.OK == true)
+                        
+                    }
+                    else
+                    {
+                        File.Copy(archivo.FileName, ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
+                    }
+                    
+                    
+                }
+
                 Close();
 
             }
@@ -126,16 +146,17 @@ namespace ejemplos_ado_net
 
         private void btnAgregarImagen_Click(object sender, EventArgs e)
         {
-            OpenFileDialog archivo = new OpenFileDialog();
+            archivo = new OpenFileDialog();
             archivo.Filter = "jpg|*.jpg|png|*.png";
+
             if(archivo.ShowDialog() == DialogResult.OK)
             {
                 txtUrlImagen.Text= archivo.FileName;
                 cargarImagen(archivo.FileName);
 
-
+                txtUrlImagen.Text = (ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
                 //GUARDAR LA IMAGEN
-                File.Copy(archivo.FileName, ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
+                //File.Copy(archivo.FileName, ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
             }
         }
     }
