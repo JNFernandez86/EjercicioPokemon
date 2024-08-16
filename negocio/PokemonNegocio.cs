@@ -162,6 +162,28 @@ namespace negocio
 
 
         }
+
+        private string GetQuery(string a, string criterio, string variablef)
+        {
+            switch (criterio)
+            {
+
+                case "Comienza con":
+                    a += " like '" + variablef + "%' ";
+                    return a;
+                   
+                case "Termina con":
+                    a += " like '%" + variablef + "' ";
+                    return a;
+                case "Contiene":
+                    a += " like '%" + variablef + "%' ";
+                    return a;
+                default:
+                    return a;
+            }
+        }
+
+        
         public List<Pokemon> filtrar(string campo, string criterio, string filtro)
         {
             List<Pokemon> list = new List<Pokemon>();
@@ -172,60 +194,47 @@ namespace negocio
                 string consulta = ("select Numero, Nombre, p.Descripcion, UrlImagen, E.Descripcion Tipo, d.Descripcion Debilidad,p.IdTipo,p.IdDebilidad, p.id " +
                     "from POKEMONS p, ELEMENTOS e, elementos d " +
                     "WHERE E.Id = P.IdTipo and d.Id = p.IdDebilidad and p.activo=1 and ");
-                    //" ORDER BY Numero;");
+                //" ORDER BY Numero;");
+                string campoquery = "";
+                switch (campo)
+                {
+                    case "Número":
+                        campoquery = "numero ";
+                        switch (criterio)
+                        {
+                            case "Mayor a":
+                                consulta += campoquery +" > ";
+                                break;
+                            case "Menor a":
+                                consulta += campoquery +" < ";
+                                break;
+                            case "Igual a":
+                                consulta += campoquery + "= ";
+                                break;
+                            default:
+                                break;
+                        }
+                        consulta += filtro;
+                        break;
 
-                if(campo == "Número")
-                {
-                    switch (criterio)
-                    {
-                        case "Mayor a":
-                            consulta += "Numero > " + filtro;
-                            break;
-                        case "Menor a":
-                            consulta += "Numero < " + filtro;
-                            break;
-                        case "Igual a":
-                            consulta += "Numero = " + filtro;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                else if(campo == "Nombre")
-                {
-                    switch (criterio)
-                    {
-                        case "Comienza con":
-                            consulta += "Nombre like '"+filtro+ "%' ";
-                            break;
-                        case "Termina con":
-                            consulta += "Nombre like '%" + filtro + "' ";
-                            break;
-                        case "Contiene":
-                            consulta += "Nombre like '%" + filtro + "%' ";
-                            break;
-                        default:
-                            break;
-                    }
+                    case "Nombre":
+                        consulta += GetQuery("Nombre",criterio,filtro);
+                        break ;
+                    case "Descripcion":
+                        consulta += GetQuery("p.descripcion", criterio, filtro);
+                        break ;
+                    case "Debilidad":
+                        consulta += GetQuery("Debilidad", criterio, filtro);
+                        break;
+                    case "Tipo":
+                        consulta += GetQuery("Tipo", criterio, filtro);
+                        break;
+                    default :
+                        break;
 
                 }
-                else
-                {
-                    switch (criterio)
-                    {
-                        case "Comienza con":
-                            consulta += "d.Descripcion like '" + filtro + "%' ";
-                            break;
-                        case "Termina con":
-                            consulta += "d.Descripcion like '%" + filtro + "' ";
-                            break;
-                        case "Contiene":
-                            consulta += "d.Descripcion like '%" + filtro + "%' ";
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                              
+                
                 datos.setarConsulta(consulta);
                 datos.ejecutarLectura();
                 

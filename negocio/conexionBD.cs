@@ -20,8 +20,8 @@ namespace negocio
 
         public conexionBD()
         {
-            conexion = new SqlConnection("Data Source=192.168.0.13;Initial Catalog=POKEDEX_DB; User ID=Administrador;Password=Soporte00");
-            //conexion = new SqlConnection("server=.;database=POKEDEX_DB; integrated security=true");
+            //conexion = new SqlConnection("Data Source=192.168.0.13;Initial Catalog=POKEDEX_DB; User ID=Administrador;Password=Soporte00");
+            conexion = new SqlConnection("server=.;database=POKEDEX_DB; integrated security=true");
             cmd = new SqlCommand();
 
 

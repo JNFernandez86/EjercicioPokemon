@@ -24,10 +24,16 @@ namespace ejemplos_ado_net
       
         private void frmPokemon_Load(object sender, EventArgs e)
         {
+            btnBuscar.Enabled = false;
+            cboCriterio.Enabled = false;
+            txtfiltroAvanzado.Enabled = false;
             cargar();
             cboCampo.Items.Add("Número");
             cboCampo.Items.Add("Nombre");
             cboCampo.Items.Add("Descripción");
+            cboCampo.Items.Add("Tipo");
+            cboCampo.Items.Add("Debilidad");
+
 
         }
         private void cargar()
@@ -142,7 +148,46 @@ namespace ejemplos_ado_net
                 }
             }
 
-        
+        private bool soloNumeros(string cadena)
+        {
+            foreach (char caraceter in cadena)
+            {
+                if (!(char.IsNumber(caraceter)))
+                    return false;
+            }
+            return true;
+        }
+        private bool validarFiltro()
+        {
+            if (cboCampo.SelectedIndex < 0)
+            {
+                MessageBox.Show("Por favor, seleccione la opción que corresponde del menu CAMPO");
+                return true;
+            }
+            if (cboCriterio.SelectedIndex < 0) 
+            {
+                MessageBox.Show("Por favor, seleccione la opción que corresponde del menu CRITERIO");
+                return true;
+            }
+            if (string.IsNullOrEmpty(txtfiltroAvanzado.Text))
+            {
+                MessageBox.Show("Ha dejado el campo vacio, ingresar condicion de busqueda");
+                return true;
+
+            }
+            if(cboCampo.SelectedItem.ToString() == "Número")
+            {
+                if (!(soloNumeros(txtfiltroAvanzado.Text)))
+                {
+                    MessageBox.Show("No ha ingresado ningun numero");
+                    return true;
+                }
+            }
+            
+                
+                return false;
+            
+        }
 
         private void btnBuscar_Click(object sender, EventArgs e)
         {
@@ -150,6 +195,8 @@ namespace ejemplos_ado_net
 
             try
             {
+                if (validarFiltro())
+                    return;
                 string campo = cboCampo.SelectedItem.ToString();
                 string criterio = cboCriterio.SelectedItem.ToString();
                 string filtro = txtfiltroAvanzado.Text;
@@ -160,7 +207,6 @@ namespace ejemplos_ado_net
 
                 throw;
             }
-            
 
         }
 
@@ -203,11 +249,32 @@ namespace ejemplos_ado_net
                 cboCriterio.Items.Add("Contiene");
 
             }
+            cboCriterio.Enabled = true; 
         }
 
         private void cboCriterio_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if(cboCriterio.SelectedIndex < 0)
+            {
+                txtfiltroAvanzado.Enabled = false;
+            }
+            else
+            {
+                txtfiltroAvanzado.Enabled = true;
+            }
+        }
 
+        private void txtfiltroAvanzado_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtfiltroAvanzado.Text))
+            {
+                btnBuscar.Enabled = false;
+
+            }
+            else
+            {
+                btnBuscar.Enabled = true;
+            }
         }
     }
     }

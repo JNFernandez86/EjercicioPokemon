@@ -37,7 +37,7 @@ namespace ejemplos_ado_net
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-           
+            
             PokemonNegocio negocio = new PokemonNegocio();
          
             try
@@ -51,38 +51,36 @@ namespace ejemplos_ado_net
                 pokemon.Tipo = (Elemento)cboTipo.SelectedItem;
                 pokemon.Debilidad = (Elemento)cboDebilidad.SelectedItem;
                 pokemon.UrlImagen = txtUrlImagen.Text;
+
+                if (archivo != null && !(txtUrlImagen.Text.ToUpper().Contains("HTTP")))
+                {
+                    string p = (ConfigurationManager.AppSettings["Imagenes2"] + archivo.SafeFileName);
+
+                    if (!File.Exists(p))
+                    {
+
+                        File.Copy(archivo.FileName, ConfigurationManager.AppSettings["Imagenes2"] + archivo.SafeFileName);
+                        //File.Copy(archivo.FileName, ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
+                    }
+
+                }
                 
 
-                if(pokemon.PokemonID != 0)
+                if (pokemon.PokemonID != 0)
                 {
-                    //.Text = (ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
+                    
                     negocio.modificar(pokemon);
                     MessageBox.Show("Pokemon Modificado exitosamente");
                 }
                 else
                 {
-                    //txtUrlImagen.Text = (ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
+                    
                     negocio.agregar(pokemon);
                     MessageBox.Show("Pokemon agregado exitosamente");
                 }
 
                 // guardo imagen si la levanto localmente
-                if (archivo != null && !(txtUrlImagen.Text.ToUpper().Contains("HTTP")))
-                {
-                    if (File.Exists(archivo.SafeFileName))
-                    {
-                        MessageBox.Show("Archivo ya existente","Archivo duplicado",MessageBoxButtons.OKCancel);
-
-                        //if(MessageBoxButtons.OK == true)
-                        
-                    }
-                    else
-                    {
-                        File.Copy(archivo.FileName, ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
-                    }
-                    
-                    
-                }
+               
 
                 Close();
 
@@ -91,10 +89,11 @@ namespace ejemplos_ado_net
             {
 
                 MessageBox.Show(ex.ToString());
+                Close();
             }
         }
 
-        private void frmAltaPokemon_Load(object sender, EventArgs e)
+        private void cargarcombobox()
         {
             ElementoNegocio elementoNeg = new ElementoNegocio();
 
@@ -106,6 +105,28 @@ namespace ejemplos_ado_net
                 cboDebilidad.DataSource = elementoNeg.listar();
                 cboDebilidad.ValueMember = "Id";
                 cboDebilidad.DisplayMember = "Descripcion";
+                
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.ToString());
+            }
+        }
+        private void frmAltaPokemon_Load(object sender, EventArgs e)
+        {
+            //ElementoNegocio elementoNeg = new ElementoNegocio();
+
+            try
+            {
+                cargarcombobox();
+                //cboTipo.DataSource = elementoNeg.listar();
+                //cboTipo.ValueMember = "Id";
+                //cboTipo.DisplayMember = "Descripcion";
+                //cboDebilidad.DataSource = elementoNeg.listar();
+                //cboDebilidad.ValueMember = "Id";
+                //cboDebilidad.DisplayMember = "Descripcion";
 
                 if (pokemon != null)
                 {
@@ -147,17 +168,28 @@ namespace ejemplos_ado_net
         private void btnAgregarImagen_Click(object sender, EventArgs e)
         {
             archivo = new OpenFileDialog();
-            archivo.Filter = "jpg|*.jpg|png|*.png";
+            archivo.Filter = "png|*.png|jpg|*.jpg";
 
             if(archivo.ShowDialog() == DialogResult.OK)
             {
                 txtUrlImagen.Text= archivo.FileName;
                 cargarImagen(archivo.FileName);
 
-                txtUrlImagen.Text = (ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
+                txtUrlImagen.Text = (ConfigurationManager.AppSettings["Imagenes2"] + archivo.SafeFileName);
+                //txtUrlImagen.Text = (ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
+
                 //GUARDAR LA IMAGEN
                 //File.Copy(archivo.FileName, ConfigurationManager.AppSettings["Imagenes"] + archivo.SafeFileName);
             }
+        }
+
+        private void btnAgregarTipoDebilidad_Click(object sender, EventArgs e)
+        {
+            frmAgregarElementos frmnewtipo = new frmAgregarElementos();
+            frmnewtipo.ShowDialog();
+            cargarcombobox();
+            cboTipo.SelectedValue = pokemon.Tipo.Id;
+            cboDebilidad.SelectedValue = pokemon.Debilidad.Id;
         }
     }
 }
